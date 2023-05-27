@@ -19,6 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->text('body');
             $table->timestamps();
+            $table->softDeletes();
+
 
             $table->foreign('road_trip_id')->references('id')->on('road_trips')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

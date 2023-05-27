@@ -23,6 +23,8 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();
+            $table->softDeletes();
+
 
             $table->foreign('road_trip_id')->references('id')->on('road_trips')->onDelete('cascade');
         });

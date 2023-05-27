@@ -26,6 +26,7 @@ class AuthController extends Controller
             ]);
             $credentials = $request->only('email', 'password');
 
+
             $token = Auth::attempt($credentials);
             if (!$token) {
                 return response()->json([
@@ -35,6 +36,14 @@ class AuthController extends Controller
             }
 
             $user = Auth::user();
+
+            if ($user['deleted_at'] != null) {
+                return response()->json([
+                    'code'=>204,
+                    'status' => 'failed',
+                    'message' => 'user not exist'
+                ]);
+            }
             return response()->json([
                 'status' => 'success',
                 'name' => $user->name,
@@ -59,7 +68,6 @@ class AuthController extends Controller
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:6',
             ]);
-
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
