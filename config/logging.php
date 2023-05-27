@@ -127,6 +127,11 @@ return [
             'path' => storage_path('logs/authlog.log'),
             'level' => 'debug',
         ],
+        'roadtriplog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/roadtriplog.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

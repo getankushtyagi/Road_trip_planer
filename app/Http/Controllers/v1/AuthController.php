@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -20,10 +21,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $request->validate([
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string',
             ]);
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator);
+            }
             $credentials = $request->only('email', 'password');
 
 
@@ -39,7 +43,7 @@ class AuthController extends Controller
 
             if ($user['deleted_at'] != null) {
                 return response()->json([
-                    'code'=>204,
+                    'code' => 204,
                     'status' => 'failed',
                     'message' => 'user not exist'
                 ]);
@@ -63,11 +67,17 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            $request->validate([
+            $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:6',
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'code'=>400,
+                    'status' => 'failed',
+                    'error'=>$validator->errors()]);
+            }
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -76,6 +86,7 @@ class AuthController extends Controller
 
             $token = Auth::login($user);
             return response()->json([
+                'code'=>200,
                 'status' => 'success',
                 'message' => 'User created successfully',
                 'user' => $user,

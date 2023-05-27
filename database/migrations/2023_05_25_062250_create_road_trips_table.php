@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('title');
-            $table->string('destination');
+            $table->string('starting_point');
+            $table->string('destination_point');
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();

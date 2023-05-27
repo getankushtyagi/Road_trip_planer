@@ -18,7 +18,8 @@ class RoadTripSeeder extends Seeder
         DB::table('road_trips')->insert([
             'user_id' => 1,
             'title' => 'Summer Road Trip',
-            'destination' => 'Beach City',
+            'starting_point' => 'Delhi, India',
+            'destination_point' => 'Mananli, India',
             'start_date' => '2023-06-01',
             'end_date' => '2023-06-10',
             'created_at' => now(),
