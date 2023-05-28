@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\ResetController;
 use App\Http\Controllers\v1\RoadTripController;
+use App\Http\Controllers\v1\StopController;
 use App\Http\Controllers\v1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,4 +39,13 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('road-trips',[RoadTripController::class,'myTrips'])->name('my-trips');
     Route::post('road-trips',[RoadTripController::class,'createTrip'])->name('create-trip');
     Route::get('road-trips/{id}',[RoadTripController::class,'tripDetail'])->name('trip-detail');
+    Route::put('road-trips/{id}',[RoadTripController::class,'tripDetailUpdate'])->name('trip-detail-update');
+    Route::delete('road-trips/{id}',[RoadTripController::class,'tripDelete'])->name('trip-delete');
+
+    //stops APIs
+    Route::get('road-trips/{road_trip_id}/stops',[StopController::class,'myStops'])->name('my-stops');
+    Route::post('road-trips/{road_trip_id}/stops',[StopController::class,'createStop'])->name('create-stop');
+    Route::get('road-trips/{road_trip_id}/stops/{id}',[StopController::class,'tripStopDetail'])->name('trip-stop-detail');
+    Route::put('road-trips/{road_trip_id}/stops/{id}',[StopController::class,'updateStop'])->name('update-stop');
+    Route::delete('road-trips/{road_trip_id}/stops/{id}',[StopController::class,'deleteStop'])->name('delete-stop');
 });

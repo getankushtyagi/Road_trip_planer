@@ -132,6 +132,11 @@ return [
             'path' => storage_path('logs/roadtriplog.log'),
             'level' => 'debug',
         ],
+        'stoplog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/stoplog.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];
