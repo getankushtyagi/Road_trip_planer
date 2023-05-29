@@ -68,7 +68,55 @@ class StopController extends Controller
         } catch (\Exception $e) {
             // dd($e);
             Log::channel('stoplog')->error(
-                'stop-create' . date("Y-m-d H:i:s"),
+                'stop-detail' . date("Y-m-d H:i:s"),
+                ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
+            );
+        }
+    }
+
+    public function updateStop($road_trip_id, $id, Request $request)
+    {
+        try {
+            $data = $request->all();
+            $update_stop = [
+                'road_trip_id' => $road_trip_id,
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'latitude' => $data['latitude'],
+                'longitude' => $data['longitude'],
+                'updated_at' => now(),
+            ];
+            $mystops = DB::table('stops')->where('road_trip_id', $road_trip_id)->where('id', $id)->update($update_stop);
+            if ($mystops) {
+                return response()->json(['code' => '200', 'status' => 'success', 'message' => 'Your Trips Updated Successfully']);
+            } else {
+                return response()->json(['code' => '400', 'status' => 'failed', 'message' => 'Trip Not updated']);
+            }
+        } catch (\Exception $e) {
+            // dd($e);
+            Log::channel('stoplog')->error(
+                'stop-update' . date("Y-m-d H:i:s"),
+                ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
+            );
+        }
+    }
+
+    public function deleteStop($road_trip_id, $id, Request $request)
+    {
+        try {
+            $trip_detail = [
+                'deleted_at' => now(),
+            ];
+            $userTrip = DB::table('stops')->where('id', $id)->where('road_trip_id', $road_trip_id)->update($trip_detail);
+            if ($userTrip) {
+                return response()->json(['code' => '200', 'status' => 'success', 'message' => 'Your stops Deleted Successfully']);
+            } else {
+                return response()->json(['code' => '400', 'status' => 'failed', 'message' => 'stop Not deleted']);
+            }
+        } catch (\Exception $e) {
+            // dd($e);
+            Log::channel('stoplog')->error(
+                'stop-delete' . date("Y-m-d H:i:s"),
                 ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
             );
         }

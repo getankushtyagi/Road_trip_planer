@@ -113,8 +113,6 @@ class RoadTripController extends Controller
     public function tripDelete($trip_id, Request $request)
     {
         try {
-            $data = $request->all();
-            $loginuser = Auth::user()->id;
 
             $trip_detail = [
                 'deleted_at' => now(),
