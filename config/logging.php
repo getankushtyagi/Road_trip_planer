@@ -137,6 +137,16 @@ return [
             'path' => storage_path('logs/stoplog.log'),
             'level' => 'debug',
         ],
+        'activitylog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/activitylog.log'),
+            'level' => 'debug',
+        ],
+        'commentslog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/commentslog.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];
