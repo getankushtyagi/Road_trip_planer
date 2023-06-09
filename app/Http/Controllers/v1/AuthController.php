@@ -61,6 +61,7 @@ class AuthController extends Controller
                 'login' . date("Y-m-d H:i:s"),
                 ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
             );
+            return ['message' => $e->getMessage()];
         }
     }
 
