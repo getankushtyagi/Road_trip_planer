@@ -20,6 +20,9 @@ return new class extends Migration
             $table->tinyInteger('role')->default(1)->comment('1- user, 0- Admin');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('confirm_password');
+            $table->text('phone');
+            $table->text('dob')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

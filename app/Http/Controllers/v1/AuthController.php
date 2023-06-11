@@ -20,89 +20,91 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|string|email',
-                'password' => 'required|string',
-            ]);
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator);
-            }
-            $credentials = $request->only('email', 'password');
-
-
-            $token = Auth::attempt($credentials);
-            if (!$token) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized',
-                ], 401);
-            }
-
-            $user = Auth::user();
-
-            if ($user['deleted_at'] != null) {
-                return response()->json([
-                    'code' => 204,
-                    'status' => 'failed',
-                    'message' => 'user not exist'
-                ]);
-            }
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+        if ($validator->fails()) {
             return response()->json([
-                'status' => 'success',
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'auth_token' => $token,
-            ]);
-        } catch (\Exception $e) {
-            // dd($e);
-            Log::channel('authlog')->error(
-                'login' . date("Y-m-d H:i:s"),
-                ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
-            );
-            return ['message' => $e->getMessage()];
+                'code'=>400,
+                'status' => 'failed',
+                'error'=>$validator->errors()]);
         }
+        $credentials = $request->only('email', 'password');
+
+
+        $token = Auth::attempt($credentials);
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        if ($user['deleted_at'] != null) {
+            return response()->json([
+                'code' => 204,
+                'status' => 'failed',
+                'message' => 'user not exist'
+            ]);
+        }
+        return response()->json([
+            'status' => 'success',
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'auth_token' => $token,
+        ]);
+        // try {
+        // } catch (\Exception $e) {
+        //     // dd($e);
+        //     Log::channel('authlog')->error(
+        //         'login' . date("Y-m-d H:i:s"),
+        //         ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
+        //     );
+        //     return ['message' => $e->getMessage()];
+        // }
     }
 
     public function register(Request $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:6',
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'code'=>400,
-                    'status' => 'failed',
-                    'error'=>$validator->errors()]);
-            }
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|same:confirm_password',
+            'confirm_password' => 'required|string|min:6',
+            'phone' => 'required|numeric|min:10',
+            'dob' => 'required|date|before:'.now()->subYears(15)->toDateString()
 
-            $token = Auth::login($user);
+        ]);
+        if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status' => 'success',
-                'message' => 'User created successfully',
-                'user' => $user,
-                'authorisation' => [
-                    'token' => $token,
-                    'type' => 'bearer',
-                ]
-            ]);
-        } catch (\Exception $e) {
-            // dd($e);
-            Log::channel('authlog')->error(
-                'register' . date("Y-m-d H:i:s"),
-                ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]
-            );
+                'code'=>400,
+                'status' => 'failed',
+                'error'=>$validator->errors()]);
         }
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'confirm_password' => encrypt($request->password),
+            'phone' => $request->phone,
+            'dob' => $request->dob,
+        ]);
+
+        $token = Auth::login($user);
+        return response()->json([
+            'code'=>200,
+            'status' => 'success',
+            'message' => 'User created successfully',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
     }
 
     public function logout()

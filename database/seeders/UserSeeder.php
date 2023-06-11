@@ -21,17 +21,25 @@ class UserSeeder extends Seeder
                 'name' => 'Ankush Tyagi',
                 'email' => 'getankushtyagi@yopmail.com',
                 'password' => Hash::make('Test@12345'),
+                'confirm_password' => Hash::make('Test@12345'),
                 'role' => 0,
+                'phone' => 8979149318,
+                'dob' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
-                'password' => Hash::make('password'),
+                'name' => 'kulli',
+                'email' => 'kulli@yopmail.com',
+                'password' => Hash::make('Test@12345'),
+                'confirm_password' => Hash::make('Test@12345'),
+                'role' => 0,
+                'phone' => 7060727481,
+                'dob' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
+            ],
+           
         );
     }
 }
